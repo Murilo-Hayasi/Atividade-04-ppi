@@ -7,7 +7,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Configuração da sessão
+//configuração da sessão
 app.use(
   session({
     secret: "segredo123",
@@ -16,9 +16,9 @@ app.use(
   })
 );
 
-let produtos = []; // lista em memória
+let produtos = []; 
 
-// Tela de login
+//Tela de login
 app.get("/", (req, res) => {
   res.send(`
         <h2>Login</h2>
@@ -29,14 +29,14 @@ app.get("/", (req, res) => {
     `);
 });
 
-// Processa login
+//processa o login
 app.post("/login", (req, res) => {
   const { usuario } = req.body;
 
-  // salva o nome do usuário na sessão
+  //salva o nome do usuario na sessão
   req.session.usuario = usuario;
 
-  // salva cookie com último acesso
+  //salva cookie com ultimo acesso
   res.cookie("ultimoAcesso", new Date().toLocaleString(), {
     maxAge: 3600000,
   });
@@ -44,7 +44,7 @@ app.post("/login", (req, res) => {
   res.redirect("/cadastro");
 });
 
-// Tela de cadastro (somente logado)
+//tela de cadastro (sapos logado)
 app.get("/cadastro", (req, res) => {
   if (!req.session.usuario) {
     return res.send(
@@ -54,7 +54,7 @@ app.get("/cadastro", (req, res) => {
 
   const ultimoAcesso = req.cookies.ultimoAcesso || "Primeiro acesso";
 
-  // tabela de produtos
+  //tabela de produtos
   let tabela = "<h3>Nenhum produto cadastrado ainda.</h3>";
   if (produtos.length > 0) {
     tabela = `
@@ -110,7 +110,7 @@ app.get("/cadastro", (req, res) => {
     `);
 });
 
-// Cadastro de produto
+// cadastro de produto
 app.post("/cadastro", (req, res) => {
   if (!req.session.usuario) {
     return res.send("<h3>Você precisa estar logado.</h3>");
@@ -120,7 +120,6 @@ app.post("/cadastro", (req, res) => {
   res.redirect("/cadastro");
 });
 
-// Inicia servidor
 app.listen(3000, () =>
   console.log("Servidor rodando em http://localhost:3000")
 );
