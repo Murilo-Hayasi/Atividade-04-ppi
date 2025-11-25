@@ -26,6 +26,8 @@
   },
   "homepage": "https://github.com/Murilo-Hayasi/Atividade-02-ppi#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "express-session": "^1.17.3"
   }
 }

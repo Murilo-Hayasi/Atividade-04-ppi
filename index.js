@@ -1,21 +1,26 @@
-const express = require('express');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
+import express from "express";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 
 const app = express();
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(session({
-    secret: 'segredo123',
+// Configuração da sessão
+app.use(
+  session({
+    secret: "segredo123",
     resave: false,
-    saveUninitialized: true
-}));
+    saveUninitialized: true,
+  })
+);
 
-let produtos = [];
+let produtos = []; // lista em memória
 
-app.get('/', (req, res) => {
-    res.send(`
+// Tela de login
+app.get("/", (req, res) => {
+  res.send(`
         <h2>Login</h2>
         <form method="POST" action="/login">
             <input name="usuario" placeholder="Seu nome" required/>
@@ -24,25 +29,35 @@ app.get('/', (req, res) => {
     `);
 });
 
-app.post('/login', (req, res) => {
-    const { usuario } = req.body;
+// Processa login
+app.post("/login", (req, res) => {
+  const { usuario } = req.body;
 
-    req.session.usuario = usuario;
+  // salva o nome do usuário na sessão
+  req.session.usuario = usuario;
 
-    res.cookie("ultimoAcesso", new Date().toLocaleString(), { maxAge: 3600000 });
+  // salva cookie com último acesso
+  res.cookie("ultimoAcesso", new Date().toLocaleString(), {
+    maxAge: 3600000,
+  });
 
-    res.redirect('/cadastro');
+  res.redirect("/cadastro");
 });
 
-app.get('/cadastro', (req, res) => {
-    if (!req.session.usuario) {
-        return res.send("<h3>Você precisa fazer login para acessar o cadastro.</h3><a href='/'>Voltar</a>");
-    }
-    const ultimoAcesso = req.cookies.ultimoAcesso || "Primeiro acesso";
+// Tela de cadastro (somente logado)
+app.get("/cadastro", (req, res) => {
+  if (!req.session.usuario) {
+    return res.send(
+      "<h3>Você precisa realizar o login antes.</h3><a href='/'>Voltar</a>"
+    );
+  }
 
-    let tabela = "<h3>Nenhum produto cadastrado ainda.</h3>";
-    if (produtos.length > 0) {
-        tabela = `
+  const ultimoAcesso = req.cookies.ultimoAcesso || "Primeiro acesso";
+
+  // tabela de produtos
+  let tabela = "<h3>Nenhum produto cadastrado ainda.</h3>";
+  if (produtos.length > 0) {
+    tabela = `
         <table border="1" cellpadding="5">
             <tr>
                 <th>Código</th>
@@ -53,7 +68,9 @@ app.get('/cadastro', (req, res) => {
                 <th>Estoque</th>
                 <th>Fabricante</th>
             </tr>
-            ${produtos.map(p => `
+            ${produtos
+              .map(
+                (p) => `
                 <tr>
                     <td>${p.codigo}</td>
                     <td>${p.descricao}</td>
@@ -63,11 +80,14 @@ app.get('/cadastro', (req, res) => {
                     <td>${p.estoque}</td>
                     <td>${p.fabricante}</td>
                 </tr>
-            `).join("")}
+            `
+              )
+              .join("")}
         </table>
         `;
-    }
-    res.send(`
+  }
+
+  res.send(`
         <h2>Cadastro de Produtos</h2>
         <p>Usuário logado: <strong>${req.session.usuario}</strong></p>
         <p>Último acesso: <strong>${ultimoAcesso}</strong></p>
@@ -83,20 +103,24 @@ app.get('/cadastro', (req, res) => {
             <button type="submit">Cadastrar</button>
         </form>
 
-        <br><hr><br>
+        <hr><br>
 
         <h2>Produtos cadastrados:</h2>
         ${tabela}
     `);
 });
 
-app.post('/cadastro', (req, res) => {
-    if (!req.session.usuario) {
-        return res.send("<h3>Você precisa estar logado.</h3>");
-    }
+// Cadastro de produto
+app.post("/cadastro", (req, res) => {
+  if (!req.session.usuario) {
+    return res.send("<h3>Você precisa estar logado.</h3>");
+  }
 
-    produtos.push(req.body);
-    res.redirect('/cadastro');
+  produtos.push(req.body);
+  res.redirect("/cadastro");
 });
 
-app.listen(3000, () => console.log("Servidor rodando em http://localhost:3000"));
+// Inicia servidor
+app.listen(3000, () =>
+  console.log("Servidor rodando em http://localhost:3000")
+);
