@@ -1,0 +1,31 @@
+{
+  "name": "atividade-02-ppi",
+  "version": "1.0.0",
+  "description": "Development of a web application (using Express) capable of processing data from an HTML form.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Murilo-Hayasi/Atividade-02-ppi.git"
+  },
+  "keywords": [
+    "javascript",
+    "nodejs",
+    "express",
+    "http",
+    "post"
+  ],
+  "author": "Murilo Hayasi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Murilo-Hayasi/Atividade-02-ppi/issues"
+  },
+  "homepage": "https://github.com/Murilo-Hayasi/Atividade-02-ppi#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
